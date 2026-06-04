@@ -106,11 +106,11 @@ router.patch("/:postId/update", isLoggedIn, async (req, res, next) => {
       .filter((tag) => tag);
 
     const result = await Promise.all(
-      normalizedTag.map((tag) => {
+      normalizedTag.map((tag) =>
         Hashtag.findOrCreate({
           where: { title: tag },
-        });
-      }),
+        }),
+      ),
     );
 
     await post.setHashtags(result.map((r) => r[0]));
@@ -399,8 +399,8 @@ router.get("/liked/me", isLoggedIn, async (req, res, next) => {
   }
 });
 
-// 게시글 삭제
-router.delete("/post/:postId", isLoggedIn, async (req, res, next) => {
+// ✅ 게시글 삭제
+router.delete("/:postId/delete", isLoggedIn, async (req, res, next) => {
   try {
     const { postId } = req.params;
 
