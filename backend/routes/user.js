@@ -61,9 +61,29 @@ router.get("/follow", isLoggedIn, async (req, res, next) => {
       ],
     });
 
+    if (!user) {
+      return res.status(404).send("no user");
+    }
+
+    const followingIds = new Set(
+      user.Followings.map((following) => following.id),
+    );
+
+    const followers = user.Followers.map((follower) => ({
+      id: follower.id,
+      nick: follower.nick,
+      isFollowing: followingIds.has(follower.id),
+    }));
+
+    const followings = user.Followings.map((following) => ({
+      id: following.id,
+      nick: following.nick,
+      isFollowing: true,
+    }));
+
     res.status(200).json({
-      followers: user.Followers,
-      followings: user.Followings,
+      followers,
+      followings,
     });
   } catch (error) {
     console.error(error);
