@@ -7,13 +7,13 @@ export interface IFollow {
   followerId: number;
 }
 
-export interface IUserFollow {
+export interface IFollow {
   id: number;
   nick: string;
   isFollowing: boolean;
 }
 
-export interface IFollowResponse {
-  followers: IUserFollow[];
-  followings: IUserFollow[];
-}
+// export interface IFollowResponse {
+//   followers: IUserFollow[];
+//   followings: IUserFollow[];
+// }

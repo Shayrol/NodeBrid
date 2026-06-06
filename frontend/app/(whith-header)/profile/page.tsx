@@ -1,6 +1,5 @@
 'use client';
 
-import { getFollow } from '@/src/services/follow';
 import { useAuth } from '@/store/auth-context';
 import { useQuery } from '@tanstack/react-query';
 import MyInfo from './_components/MyInfo';
@@ -8,42 +7,55 @@ import { useSearchParams } from 'next/navigation';
 import FollowersTab from './_components/FollowersTab';
 import FollowingsTab from './_components/FollowingsTab';
 import Link from 'next/link';
+import { getProfile } from '@/src/services/profile';
 
 export default function ProfilePage() {
+  // const { data } = useQuery({
+  //   queryKey: ['follow'],
+  //   queryFn: getFollow,
+  // });
+  // const params = useParams();
+  // const userId = params.userId as string;
+  const { user } = useAuth();
+
+  const userId = String(user?.id);
+
   const { data } = useQuery({
-    queryKey: ['follow'],
-    queryFn: getFollow,
+    queryKey: ['profile', userId],
+    queryFn: () => getProfile(userId),
   });
 
-  const { user } = useAuth();
+  console.log('profile: ', data);
+
   const searchParams = useSearchParams();
 
-  const tab = searchParams.get('tab') ?? 'followers';
+  const tab = searchParams.get('tab') ?? 'posts';
 
   const tabComponents = {
+    posts: {
+      label: '게시글',
+      component: <div>gd</div>,
+    },
     followers: {
       label: '팔로워',
-      component: <FollowersTab follow={data} />,
+      component: <FollowersTab userId={user?.id} />,
     },
     followings: {
       label: '팔로잉',
-      component: <FollowingsTab follow={data} />,
+      component: <FollowingsTab userId={user?.id} />,
     },
   };
-
-  const followers = data?.followers.length || 0;
-  const followings = data?.followings.length || 0;
 
   console.log('data: ', data);
 
   return (
     <main className="flex flex-col gap-10 w-full max-w-7xl">
-      <MyInfo user={user} followers={followers} followings={followings} />
+      <MyInfo user={user} profile={data} />
       <div className="flex flex-col justify-center items-start gap-2 w-full px-4 sm:flex-row">
         {/* side tab */}
         <div
           className="
-          flex flex-col justify-center items-center gap-1 w-full max-w-40 p-1 
+          flex flex-col justify-center items-center gap-1 w-full max-w-40 p-1
           border border-border rounded-lg max-sm:max-w-full max-sm:flex-row"
         >
           {Object.entries(tabComponents).map(([key, value]) => (

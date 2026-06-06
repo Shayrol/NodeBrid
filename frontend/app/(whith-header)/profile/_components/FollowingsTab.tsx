@@ -1,21 +1,25 @@
 'use client';
 
 import FollowButton from '@/components/common/follow/FollowButton';
-import { IFollowResponse } from '@/types/follow';
+import { getFollowings } from '@/src/services/follow';
+import { useQuery } from '@tanstack/react-query';
 import { User } from 'lucide-react';
 
 type Props = {
-  follow?: IFollowResponse;
+  userId: number;
 };
 
-export default function FollowingsTab({ follow }: Props) {
-  const followings = follow?.followings;
+export default function FollowingsTab({ userId }: Props) {
+  const { data } = useQuery({
+    queryKey: ['followingsTap', userId],
+    queryFn: () => getFollowings(userId),
+  });
 
   return (
     <div className="flex flex-col justify-center items-center w-full border border-border rounded-lg p-4">
-      {followings?.length !== 0 ? (
+      {data?.length !== 0 ? (
         <div className="flex flex-col gap-4 w-full h-96 overflow-y-auto md:grid md:grid-cols-2">
-          {followings?.map((el) => (
+          {data?.map((el) => (
             <div
               key={el.id}
               className="flex justify-between items-center p-3 h-fit border border-border rounded-lg"

@@ -1,21 +1,21 @@
 'use client';
 
 import { User as UserType } from '@/store/auth-context';
+import { IProfileResponse } from '@/types/profile';
 import { User } from 'lucide-react';
 
 type Props = {
   user: UserType;
-  followers: number;
-  followings: number;
+  profile?: IProfileResponse;
 };
 
-export default function MyInfo({ user, followers, followings }: Props) {
+export default function MyInfo({ user, profile }: Props) {
   return (
     <div className="flex flex-col justify-start items-center gap-3 w-full px-4 pt-3">
       {/* 기본 정보 + follow */}
       <div className="flex flex-row justify-center items-center gap-4 w-full max-sm:items-start max-sm:flex-col">
         {/* user */}
-        <div className="flex gap-2 w-full max-w-72">
+        <div className="flex gap-2 w-full max-w-60">
           <div className="flex justify-center items-center p-1 rounded-full bg-card-secondary border border-border">
             <User size={36} />
           </div>
@@ -28,15 +28,19 @@ export default function MyInfo({ user, followers, followings }: Props) {
           </div>
         </div>
 
-        {/* follow */}
+        {/* post + follow Count */}
         <div className="flex justify-center items-center gap-2 w-full">
           <div className="flex justify-center items-center gap-1 w-full p-2 bg-card border border-border rounded-lg">
+            <p className="text-sm">게시글</p>
+            <p className="text-sm">{profile?.postCount}</p>
+          </div>
+          <div className="flex justify-center items-center gap-1 w-full p-2 bg-card border border-border rounded-lg">
             <p className="text-sm">팔로워</p>
-            <p className="text-sm">{followers}</p>
+            <p className="text-sm">{profile?.followerCount}</p>
           </div>
           <div className="flex justify-center items-center gap-1 w-full p-2 bg-card border border-border rounded-lg">
             <p className="text-sm">팔로잉</p>
-            <p className="text-sm">{followings}</p>
+            <p className="text-sm">{profile?.followingCount}</p>
           </div>
         </div>
       </div>
