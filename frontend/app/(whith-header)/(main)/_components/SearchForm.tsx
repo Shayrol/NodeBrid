@@ -74,7 +74,7 @@ export default function SearchForm() {
             <SelectItem value="content" className="text-xs p-2">
               내용
             </SelectItem>
-            <SelectItem value="author" className="text-xs p-2">
+            <SelectItem value="nick" className="text-xs p-2">
               작성자
             </SelectItem>
             <SelectItem value="tag" className="text-xs p-2">

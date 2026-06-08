@@ -8,6 +8,7 @@ import FollowersTab from './_components/FollowersTab';
 import FollowingsTab from './_components/FollowingsTab';
 import Link from 'next/link';
 import { getProfile } from '@/src/services/profile';
+import PostsTab from './_components/PostsTab';
 
 export default function ProfilePage() {
   // const { data } = useQuery({
@@ -34,7 +35,7 @@ export default function ProfilePage() {
   const tabComponents = {
     posts: {
       label: '게시글',
-      component: <div>gd</div>,
+      component: <PostsTab user={user} />,
     },
     followers: {
       label: '팔로워',
