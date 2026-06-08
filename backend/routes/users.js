@@ -1,6 +1,7 @@
 const express = require("express");
 
-const { User, Post } = require("../models");
+const { User, Post, Hashtag } = require("../models");
+const { Op } = require("sequelize");
 
 const router = express.Router();
 
@@ -143,6 +144,126 @@ router.get("/:userId/followings", async (req, res, next) => {
     }));
 
     res.status(200).json(followings);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 유저 게시글 목록 조회
+router.get("/:userId/posts", async (req, res, next) => {
+  const { page = 1, limit = 10, type, keyword, sort = "latest" } = req.query;
+  const { userId } = req.params;
+
+  const parsedPage = parseInt(page, 10);
+  const parsedLimit = Math.min(parseInt(limit, 10), 20);
+
+  const offset = (parsedPage - 1) * parsedLimit;
+
+  const where = {
+    UserId: userId,
+  };
+
+  const hashtagWhere = {};
+
+  // 제목 검색
+  if (type === "title" && keyword) {
+    where.title = {
+      [Op.like]: `%${keyword}%`,
+    };
+  }
+
+  // 내용 검색
+  if (type === "content" && keyword) {
+    where.content = {
+      [Op.like]: `%${keyword}%`,
+    };
+  }
+
+  // 태그 검색
+  if (type === "tag" && keyword) {
+    hashtagWhere.title = {
+      [Op.like]: `%${keyword}%`,
+    };
+  }
+
+  const order =
+    sort === "oldest" ? [["createdAt", "ASC"]] : [["createdAt", "DESC"]];
+
+  try {
+    const posts = await Post.findAndCountAll({
+      distinct: true,
+
+      where,
+
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nick", "provider", "email"],
+
+          include: req.user
+            ? [
+                {
+                  model: User,
+                  as: "Followers",
+                  where: {
+                    id: req.user.id,
+                  },
+                  attributes: ["id"],
+                  required: false,
+                },
+              ]
+            : [],
+        },
+
+        {
+          model: User,
+          as: "Likers",
+          attributes: ["id"],
+          through: {
+            attributes: [],
+          },
+        },
+
+        {
+          model: Hashtag,
+          attributes: ["id", "title"],
+          through: {
+            attributes: [],
+          },
+          where:
+            Object.keys(hashtagWhere).length > 0 ? hashtagWhere : undefined,
+        },
+      ],
+
+      order,
+
+      limit: parsedLimit,
+      offset,
+    });
+
+    const result = posts.rows.map((post) => {
+      const postJson = post.toJSON();
+
+      if (postJson.User) {
+        postJson.User.isFollowing = !!(
+          postJson.User.Followers && postJson.User.Followers.length > 0
+        );
+
+        delete postJson.User.Followers;
+      }
+
+      return {
+        ...postJson,
+        likeCount: postJson.Likers.length,
+      };
+    });
+
+    res.status(200).json({
+      posts: result,
+      totalCount: posts.count,
+      hasMore: offset + parsedLimit < posts.count,
+    });
   } catch (error) {
     console.error(error);
     next(error);
