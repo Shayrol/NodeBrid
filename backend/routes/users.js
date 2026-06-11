@@ -26,12 +26,34 @@ router.get("/:userId", async (req, res, next) => {
       }),
     ]);
 
+    let isFollowing = false;
+
+    if (req.user) {
+      const me = await User.findByPk(req.user.id, {
+        include: [
+          {
+            model: User,
+            as: "Followings",
+            attributes: ["id"],
+            through: {
+              attributes: [],
+            },
+          },
+        ],
+      });
+
+      isFollowing = me.Followings.some(
+        (following) => Number(following.id) === Number(user.id),
+      );
+    }
+
     res.json({
       id: user.id,
       nick: user.nick,
       followerCount,
       followingCount,
       postCount,
+      isFollowing,
     });
   } catch (error) {
     next(error);
@@ -41,6 +63,7 @@ router.get("/:userId", async (req, res, next) => {
 // 팔로워 목록
 router.get("/:userId/followers", async (req, res, next) => {
   try {
+    // 1. 프로필 주인(userId: 1)의 팔로워 목록 조회
     const user = await User.findOne({
       where: {
         id: req.params.userId,
@@ -62,10 +85,11 @@ router.get("/:userId/followers", async (req, res, next) => {
     }
 
     let followingIds = new Set();
+    const myId = req.user ? Number(req.user.id) : null;
 
-    // 로그인한 경우에만 내 팔로잉 목록 조회
-    if (req.user) {
-      const me = await User.findByPk(req.user.id, {
+    // 2. 로그인한 상태라면, 내(userId: 2)가 팔로우하는 사람들의 ID 목록 가져오기
+    if (myId) {
+      const me = await User.findByPk(myId, {
         include: [
           {
             model: User,
@@ -78,14 +102,30 @@ router.get("/:userId/followers", async (req, res, next) => {
         ],
       });
 
-      followingIds = new Set(me.Followings.map((following) => following.id));
+      // 내 팔로잉 목록 [1, 3, 5]를 Set으로 변환하여 검색 속도 최적화 O(1)
+      if (me && me.Followings) {
+        followingIds = new Set(
+          me.Followings.map((following) => Number(following.id)),
+        );
+      }
     }
 
-    const followers = user.Followers.map((follower) => ({
-      id: follower.id,
-      nick: follower.nick,
-      isFollowing: followingIds.has(follower.id),
-    }));
+    console.log("내 팔로우 목록: ", followingIds);
+    console.log("상대 팔로우 목록: ", user.Followers);
+
+    // 3. 프로필 주인의 팔로워 목록([2, 3, 4, 5])을 순회하며 상태값 매핑
+    const followers = user.Followers.map((follower) => {
+      const followerId = Number(follower.id);
+
+      return {
+        id: followerId,
+        nick: follower.nick,
+        // 해당 유저가 '나' 자신인지 확인 (프론트에서 팔로우 버튼 숨김 처리 등에 유용)
+        isMe: myId === followerId,
+        // 내가 이 사람을 팔로우하고 있는지 확인 (Set.has를 이용해 true/false 반환)
+        isFollowing: followingIds.has(followerId),
+      };
+    });
 
     res.status(200).json(followers);
   } catch (error) {
@@ -97,6 +137,7 @@ router.get("/:userId/followers", async (req, res, next) => {
 // 팔로잉 목록
 router.get("/:userId/followings", async (req, res, next) => {
   try {
+    // 1. 프로필 주인(userId: 1)이 팔로우하는 목록 조회
     const user = await User.findOne({
       where: {
         id: req.params.userId,
@@ -118,10 +159,11 @@ router.get("/:userId/followings", async (req, res, next) => {
     }
 
     let followingIds = new Set();
+    const myId = req.user ? Number(req.user.id) : null;
 
-    // 로그인한 경우에만 내 팔로잉 목록 조회
-    if (req.user) {
-      const me = await User.findByPk(req.user.id, {
+    // 2. 로그인한 상태라면, 나(myId)의 팔로잉 목록을 가져와 Set으로 구성
+    if (myId) {
+      const me = await User.findByPk(myId, {
         include: [
           {
             model: User,
@@ -134,14 +176,24 @@ router.get("/:userId/followings", async (req, res, next) => {
         ],
       });
 
-      followingIds = new Set(me.Followings.map((following) => following.id));
+      if (me && me.Followings) {
+        followingIds = new Set(me.Followings.map((f) => Number(f.id)));
+      }
     }
 
-    const followings = user.Followings.map((following) => ({
-      id: following.id,
-      nick: following.nick,
-      isFollowing: followingIds.has(following.id),
-    }));
+    // 3. 상대방의 팔로잉 목록을 순회하며 상태값 매핑
+    const followings = user.Followings.map((following) => {
+      const followingId = Number(following.id);
+
+      return {
+        id: followingId,
+        nick: following.nick,
+        // 이 사람이 '나' 자신인가?
+        isMe: myId === followingId,
+        // 내가 이 사람을 팔로우하고 있는가?
+        isFollowing: followingIds.has(followingId),
+      };
+    });
 
     res.status(200).json(followings);
   } catch (error) {
