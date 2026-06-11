@@ -19,6 +19,20 @@ async function getUser() {
   }
 }
 
+export const metadata = {
+  title: {
+    default: 'NodeBird',
+    template: 'NodeBird | %s',
+  },
+  description: 'SNS 서비스',
+
+  openGraph: {
+    type: 'website',
+    siteName: 'NodeBird',
+    images: ['/NodeBird_logo_f_w.png'],
+  },
+};
+
 export default async function MainLayout({
   children,
 }: {

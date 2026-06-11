@@ -13,10 +13,7 @@ import { toast } from 'sonner';
 
 type Props = {
   mode: 'create' | 'edit';
-  initialData?: {
-    post: IPost;
-    totalCount: number;
-  };
+  initialData?: IPost;
 };
 
 type FormValues = {
@@ -32,7 +29,7 @@ export default function PostForm({ mode, initialData }: Props) {
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(
-    initialData?.post.img || null,
+    initialData?.img || null,
   );
   const router = useRouter();
 
@@ -71,10 +68,10 @@ export default function PostForm({ mode, initialData }: Props) {
     if (!initialData) return;
 
     reset({
-      title: initialData.post.title,
-      content: initialData.post.content,
+      title: initialData.title,
+      content: initialData.content,
       UserId: user?.id,
-      hashtags: initialData.post.Hashtags?.map((el) => el.title) || [],
+      hashtags: initialData.Hashtags?.map((el) => el.title) || [],
     });
   }, [initialData, reset]);
 
@@ -86,7 +83,7 @@ export default function PostForm({ mode, initialData }: Props) {
     console.log('hash tag: ', data.hashtags);
 
     try {
-      let imageUrl = initialData?.post.img || '';
+      let imageUrl = initialData?.img || '';
 
       // 새 이미지 선택한 경우만 업로드
       if (imageFile) {
@@ -117,7 +114,7 @@ export default function PostForm({ mode, initialData }: Props) {
       // 생성 / 수정 분기
       const res = await fetch(
         isEdit
-          ? `http://localhost:8001/post/${initialData?.post.id}/update`
+          ? `http://localhost:8001/post/${initialData?.id}/update`
           : 'http://localhost:8001/post/new',
         {
           method: isEdit ? 'PATCH' : 'POST',
@@ -285,9 +282,9 @@ export default function PostForm({ mode, initialData }: Props) {
             type="submit"
             disabled={isSubmitting}
             className="
-          rounded-lg px-5 py-2 max-sm:w-full
-          text-white bg-black dark:text-black dark:bg-white
-        "
+              rounded-lg px-5 py-2 max-sm:w-full
+              text-white bg-black dark:text-black dark:bg-white
+            "
           >
             {isEdit ? '수정하기' : '작성하기'}
           </button>

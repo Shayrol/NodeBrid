@@ -19,6 +19,10 @@ const cookie = cookieStore
   .map((v) => `${v.name}=${v.value}`)
   .join('; ');
 
+export const metadata = {
+  title: '홈',
+};
+
 export default async function HomePage({ searchParams }: Props) {
   const params = await searchParams;
   const posts = await getPosts(params, cookie);
@@ -164,3 +168,12 @@ export default async function HomePage({ searchParams }: Props) {
 // 내정보 페이지 내가 작성한 게시글 목록 구현 완
 //   - 모바일 환경 UI 구현하기
 // 상대 프로필 정보 구현하기 (내정보 요청 API 동일)
+//
+//
+
+// 프로필 페이지 구현 완료
+// 메타데이터 추가 완료
+// 1. 프로필 이미지 추가?
+// 2. 댓글 추가?
+// 3. 실시간 채팅 추가?
+// 4. 성능 최적화

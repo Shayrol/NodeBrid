@@ -138,38 +138,44 @@ export default function PostsList({
             key={el.id}
             className="flex flex-col justify-center items-center p-3 gap-3 w-full max-w-2xl bg-card border border-border rounded-lg"
           >
+            {/* 작성자 정보 */}
             <Link
-              href={`/post/${el.id}`}
-              key={el.id}
-              className="flex flex-col justify-center items-center w-full gap-3"
+              href={`/profile/${el.User.id}`}
+              className="flex justify-between items-center w-full"
             >
-              {/* 작성자 및 게시글 정보 */}
-              <div className="flex justify-between items-center w-full">
-                <div className="flex gap-2 justify-center items-center">
-                  <User className="rounded-full border border-border bg-card-secondary text-muted-foreground" />
-                  <div className="flex flex-col">
-                    <div className="flex justify-start items-center gap-1">
-                      <p className="text-xs font-semibold">{el.User.nick}</p>
-                      {user?.id === el.User.id && (
-                        <p className="text-xs font-semibold text-muted-foreground">
-                          (작성자)
-                        </p>
-                      )}
-                    </div>
-                    <p className="text-[9px] text-muted-foreground">
-                      @{el.User.email.slice(0, 4)}∗∗∗
-                    </p>
+              <div className="flex gap-2 justify-center items-center">
+                <User className="rounded-full border border-border bg-card-secondary text-muted-foreground" />
+
+                <div className="flex flex-col">
+                  <div className="flex justify-start items-center gap-1">
+                    <p className="text-xs font-semibold">{el.User.nick}</p>
+
+                    {user?.id === el.User.id && (
+                      <p className="text-xs font-semibold text-muted-foreground">
+                        (작성자)
+                      </p>
+                    )}
                   </div>
+
+                  <p className="text-[9px] text-muted-foreground">
+                    @{el.User.email.slice(0, 4)}∗∗∗
+                  </p>
                 </div>
-                <p
-                  className="text-xs text-muted-foreground"
-                  suppressHydrationWarning
-                >
-                  {formatTimeAgo(el.createdAt)}
-                </p>
               </div>
 
-              {/* 게시글 내용 */}
+              <p
+                className="text-xs text-muted-foreground"
+                suppressHydrationWarning
+              >
+                {formatTimeAgo(el.createdAt)}
+              </p>
+            </Link>
+
+            {/* 게시글 영역 */}
+            <Link
+              href={`/post/${el.id}`}
+              className="flex flex-col justify-center items-center w-full gap-3"
+            >
               <div className="flex flex-col w-full gap-2">
                 <h2 className="text-sm font-bold">{el.title}</h2>
 
@@ -194,10 +200,9 @@ export default function PostsList({
                 />
               </div>
 
-              {/* tag */}
-              {el.Hashtags.length !== 0 ? (
+              {el.Hashtags.length > 0 && (
                 <div className="flex items-center gap-2 w-full">
-                  {el?.Hashtags.map((tag) => (
+                  {el.Hashtags.map((tag) => (
                     <div
                       key={tag.id}
                       className="flex items-center justify-center py-1 px-2 rounded-lg border-border bg-card-secondary"
@@ -208,11 +213,11 @@ export default function PostsList({
                     </div>
                   ))}
                 </div>
-              ) : (
-                <></>
               )}
             </Link>
-            {/* 하단 옵션 구역 */}
+
+            {/* 하단 옵션 */}
+
             <div className="flex justify-between w-full">
               {/* 좋아요 */}
               <div className="flex gap-1">

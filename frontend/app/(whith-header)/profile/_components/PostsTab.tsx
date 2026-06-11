@@ -41,9 +41,9 @@ export default function PostsTab({ user }: { user: User }) {
         <Fragment key={el.id}>
           <div
             key={el.id}
-            className="flex w-full gap-2 border border-border rounded-lg hover:bg-card-hover"
+            className="flex w-full gap-2 border border-border rounded-lg"
           >
-            <div className="flex w-full gap-2">
+            <div className="flex w-full gap-2 max-sm:flex-col">
               {/* img */}
               <div>
                 {el.img ? (
@@ -52,18 +52,31 @@ export default function PostsTab({ user }: { user: User }) {
                     alt="img"
                     width={128}
                     height={80}
-                    className="h-auto max-h-20 object-contain overflow-hidden border border-border rounded-lg"
+                    className="
+                      h-auto max-h-20 object-contain overflow-hidden border border-border rounded-lg
+                      max-sm:w-xl max-sm:max-h-48
+                    "
                     unoptimized
                   />
                 ) : (
-                  <div className="flex justify-center items-center w-full min-w-32 h-20 max-h-20 bg-card-secondary border border-border rounded-lg">
+                  <div
+                    className="
+                    flex justify-center items-center
+                    w-full min-w-32 h-20
+                    bg-card-secondary border border-border rounded-lg
+
+                    max-sm:min-w-full
+                    max-sm:h-auto
+                    max-sm:aspect-[16/8]
+                  "
+                  >
                     <ImageOff size={20} className="text-muted-foreground" />
                   </div>
                 )}
               </div>
 
               {/* title */}
-              <div className="flex flex-col justify-center items-start gap-3">
+              <div className="flex flex-col justify-center items-start gap-3 max-sm:p-2">
                 <Link href={`/post/${el.id}`} className="hover:underline">
                   <h1 className="text-sm">{el.title}</h1>
                 </Link>
@@ -80,7 +93,7 @@ export default function PostsTab({ user }: { user: User }) {
               </div>
             </div>
 
-            <div className="flex justify-center items-center gap-2 p-3">
+            <div className="flex justify-center items-center gap-2 p-3 max-sm:hidden">
               <Link href={`/post/${el.id}/edit`}>
                 <SquarePen size={16} />
               </Link>

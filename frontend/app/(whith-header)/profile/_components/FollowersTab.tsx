@@ -15,7 +15,7 @@ export default function FollowersTab({ userId }: Props) {
     queryFn: () => getFollowers(userId),
   });
 
-  console.log('followers: ', data);
+  console.log('followers tab: ', data);
 
   return (
     <div className="flex flex-col justify-center items-center w-full border border-border rounded-lg p-4">

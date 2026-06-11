@@ -1,6 +1,7 @@
+import { IPostResponse } from '@/types/post';
 import { cookies } from 'next/headers';
 
-export const getPost = async (postId: string) => {
+export const getPost = async (postId: string): Promise<IPostResponse> => {
   const cookieStore = await cookies();
 
   const res = await fetch(`http://localhost:8001/post/${postId}`, {

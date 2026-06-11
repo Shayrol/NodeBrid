@@ -1,6 +1,8 @@
-'use client';
-
 import PostForm from '../_components/PostForm';
+
+export const metadata = {
+  title: '게시글 작성',
+};
 
 export default function PostCreatePage() {
   return (

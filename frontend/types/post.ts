@@ -47,6 +47,6 @@ export interface IPostsResponse {
 
 export interface IPostResponse {
   post: IPost;
-  likeCount: number;
-  isFollowing: boolean;
+  likeCount?: number;
+  isFollowing?: boolean;
 }

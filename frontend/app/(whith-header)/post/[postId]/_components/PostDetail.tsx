@@ -36,7 +36,7 @@ export default function PostDetail({
   const { user } = useAuth();
   const post = initialData;
   const queryClient = useQueryClient();
-  const [likeCount, setLikeCount] = useState(post.likeCount);
+  const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
 
   // 1. 내가 좋아요 누른 게시글 ID 배열 가져오기 (로그인 시에만 활성화)
   const { data: likedPostIds = [] } = useQuery<number[]>({

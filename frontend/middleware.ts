@@ -5,7 +5,7 @@ export function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
   // 공개 페이지 - /post, /post/[postId] (보안, 공개가 섞인 라우트에서 예외 공개 페이지)
-  const publicPatterns = [/^\/post$/, /^\/post\/\d+$/];
+  const publicPatterns = [/^\/post$/, /^\/post\/\d+$/, /^\/profile\/\d+$/];
 
   const isPublic = publicPatterns.some((pattern) => pattern.test(pathname));
 

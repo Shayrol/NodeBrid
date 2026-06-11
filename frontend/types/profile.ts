@@ -4,4 +4,5 @@ export interface IProfileResponse {
   id: number;
   nick: string;
   postCount: number;
+  isFollowing?: boolean;
 }
