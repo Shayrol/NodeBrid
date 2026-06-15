@@ -3,6 +3,7 @@
 @import 'shadcn/tailwind.css';
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* 스크롤할 내용이 없어도 스크롤바 영역이 존재 */
 html {
   scrollbar-gutter: stable;
 }

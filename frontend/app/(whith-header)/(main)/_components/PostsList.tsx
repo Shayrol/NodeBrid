@@ -35,8 +35,6 @@ export default function PostsList({
 }: {
   initialData: IPostsResponse;
 }) {
-  console.log('posts: ', initialData);
-
   const { user } = useAuth();
   const queryClient = useQueryClient();
   // 게시글 좋아요 카운트 업데이트
@@ -141,6 +139,7 @@ export default function PostsList({
             {/* 작성자 정보 */}
             <Link
               href={`/profile/${el.User.id}`}
+              aria-label={`${el.User.nick ?? 'null'} 프로필`}
               className="flex justify-between items-center w-full"
             >
               <div className="flex gap-2 justify-center items-center">
@@ -174,20 +173,23 @@ export default function PostsList({
             {/* 게시글 영역 */}
             <Link
               href={`/post/${el.id}`}
+              aria-label={`${el?.title} 게시글`}
               className="flex flex-col justify-center items-center w-full gap-3"
             >
               <div className="flex flex-col w-full gap-2">
                 <h2 className="text-sm font-bold">{el.title}</h2>
 
                 {el.img && (
-                  <div className="flex justify-center items-center w-full bg-card-hover rounded-lg border border-border overflow-hidden">
+                  <div className="relative w-full h-52">
+                    {' '}
+                    {/* 부모 div에 높이/너비 지정 */}
                     <Image
-                      src={`http://localhost:8001${el.img}`}
+                      src={el.img.replace('/img/', '/api/images/')}
                       alt="preview"
-                      width={1200}
-                      height={800}
-                      className="w-full h-auto max-h-52 object-contain"
-                      unoptimized
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw" // 상황에 맞게 조절
+                      className="object-contain"
+                      priority
                     />
                   </div>
                 )}
@@ -223,6 +225,7 @@ export default function PostsList({
               <div className="flex gap-1">
                 <button
                   className="transition-transform duration-150 active:scale-90 cursor-pointer"
+                  aria-label="좋아요 버튼"
                   onClick={() => onLikePost(el)}
                 >
                   <Heart

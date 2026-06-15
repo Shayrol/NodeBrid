@@ -14,8 +14,6 @@ type SearchParams = {
 export const getPosts = async (searchParams: SearchParams, cookie?: string) => {
   const query = createQueryString(searchParams);
 
-  console.log('query: ', query);
-
   const res = await fetch(`http://localhost:8001/post?${query}`, {
     headers: cookie
       ? {

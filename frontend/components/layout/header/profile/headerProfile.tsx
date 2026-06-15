@@ -43,6 +43,7 @@ export default function HeaderProfile({ user }: { user: User | null }) {
       <div className="flex flex-row gap-2 justify-center items-center">
         <Link
           href={`/login?state=${encodeURIComponent(pathname)}`}
+          aria-label="로그인"
           className="
                 flex justify-center items-center text-xs border border-border p-2 rounded-lg bg-card-secondary
                 hover:bg-card-hover"
@@ -51,6 +52,7 @@ export default function HeaderProfile({ user }: { user: User | null }) {
         </Link>
         <Link
           href="/signup"
+          aria-label="회원가입"
           className="
                 flex justify-center items-center text-xs text-white border border-primary-m p-2 rounded-lg 
                 bg-primary-m hover:bg-primary-hover"
@@ -64,7 +66,10 @@ export default function HeaderProfile({ user }: { user: User | null }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex justify-center items-center p-2 rounded-lg border border-border bg-card cursor-pointer">
+        <button
+          aria-label="내정보 옵션"
+          className="flex justify-center items-center p-2 rounded-lg border border-border bg-card cursor-pointer"
+        >
           <User className="w-4 h-4" />
         </button>
       </DropdownMenuTrigger>
@@ -80,6 +85,7 @@ export default function HeaderProfile({ user }: { user: User | null }) {
           {' '}
           <Link
             href="/profile"
+            aria-label="내정보 페이지"
             className="flex justify-center items-center text-xs w-full cursor-pointer"
           >
             내 정보
@@ -90,9 +96,7 @@ export default function HeaderProfile({ user }: { user: User | null }) {
           {' '}
           <button
             onClick={handleLogout}
-            // className="
-            //   flex justify-center items-center text-xs text-white border border-primary py-1 px-2 rounded-lg bg-primary
-            //     hover:bg-primary-hover cursor-pointer"
+            aria-label="로그아웃"
             className="flex justify-center items-center text-xs w-full cursor-pointer"
           >
             로그아웃

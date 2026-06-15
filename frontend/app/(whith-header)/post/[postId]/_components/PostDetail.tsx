@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import FollowButton from '../../../../../components/common/follow/FollowButton';
 import PostActions from './PostActions';
+import Link from 'next/link';
 
 const fetchLikedPosts = async () => {
   const res = await fetch('http://localhost:8001/post/liked/me', {
@@ -112,7 +113,10 @@ export default function PostDetail({
     <div className="flex flex-col justify-start items-center gap-3 w-full px-4 pt-3">
       <div className="flex flex-col justify-center items-center p-3 gap-3 w-full max-w-2xl bg-card border border-border rounded-lg">
         <div className="flex justify-between items-center w-full">
-          <div className="flex gap-2 justify-center items-center">
+          <Link
+            href={`/profile/${post.post.UserId}`}
+            className="flex gap-2 justify-center items-center"
+          >
             <User className="rounded-full border border-border bg-card-secondary text-muted-foreground" />
             <div className="flex flex-col">
               <div className="flex justify-start items-center gap-1">
@@ -127,7 +131,7 @@ export default function PostDetail({
                 @{post.post.User.email.slice(0, 4)}∗∗∗
               </p>
             </div>
-          </div>
+          </Link>
 
           {user?.id !== post.post.User.id ? (
             <FollowButton
@@ -150,12 +154,11 @@ export default function PostDetail({
           {post.post.img && (
             <div className="flex justify-center items-center w-full bg-card-hover rounded-lg border border-border overflow-hidden">
               <Image
-                src={`http://localhost:8001${post.post.img}`}
+                src={post.post.img.replace('/img/', '/api/images/')}
                 alt="preview"
                 width={1200}
                 height={800}
                 className="w-full h-auto max-h-52 object-contain"
-                unoptimized
               />
             </div>
           )}

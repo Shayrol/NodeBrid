@@ -93,6 +93,7 @@ export default function SearchForm() {
 
         <button
           onClick={onSearch}
+          aria-label="검색 버튼"
           className="flex items-center justify-center gap-1 rounded-lg border border-border h-8 p-2 text-xs text-nowrap"
         >
           <Search className="size-3" />

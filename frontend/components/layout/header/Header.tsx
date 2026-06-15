@@ -36,14 +36,6 @@ export default function Header({ user }: { user: User | null }) {
             <ChevronLeft size={22} />
           </Link>
         ) : (
-          // <button
-          //   type="button"
-          //   onClick={() => router.push('/')}
-          //   aria-label="뒤로 가기"
-          //   className="cursor-pointer"
-          // >
-          //   <ChevronLeft size={22} />
-          // </button>
           <HeaderLogo />
         )}
 

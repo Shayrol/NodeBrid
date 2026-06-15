@@ -247,11 +247,12 @@ export default function PostForm({ mode, initialData }: Props) {
             {preview ? (
               <div className="relative h-full w-full">
                 <Image
-                  src={isEdit ? `http://localhost:8001${preview}` : preview}
+                  src={
+                    isEdit ? preview.replace('/img/', '/api/images/') : preview
+                  }
                   alt="preview"
                   fill
                   className="rounded-lg object-contain object-center"
-                  unoptimized
                 />
 
                 <div

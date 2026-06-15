@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  productionBrowserSourceMaps: true,
   images: {
     remotePatterns: [
       {
@@ -16,6 +17,14 @@ const nextConfig: NextConfig = {
         pathname: '/img/**',
       },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/images/:path*', // 클라이언트에서는 이 경로를 호출
+        destination: 'http://localhost:8001/img/:path*', // 실제 백엔드 주소
+      },
+    ];
   },
 };
 

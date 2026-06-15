@@ -46,11 +46,6 @@ export default function UserProfilePage() {
     queryFn: () => getUserPosts(Number(userId), postsSearchParams),
   });
 
-  console.log('profile - followers: ', followers);
-  console.log('profile - followings: ', followings);
-  console.log('profile - posts: ', posts);
-  console.log('profile - count: ', userInfo);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
 
@@ -100,14 +95,14 @@ export default function UserProfilePage() {
               </div>
               <button
                 onClick={() => openModal('팔로워')}
-                className="hover:underline decoration-gray-400"
+                className="hover:underline decoration-gray-400 cursor-pointer"
               >
                 <span className="font-bold">팔로워</span>{' '}
                 {userInfo?.followerCount}
               </button>
               <button
                 onClick={() => openModal('팔로잉')}
-                className="hover:underline decoration-gray-400"
+                className="hover:underline decoration-gray-400 cursor-pointer"
               >
                 <span className="font-bold">팔로잉</span>{' '}
                 {userInfo?.followingCount}
@@ -128,10 +123,9 @@ export default function UserProfilePage() {
                 >
                   {post.img ? (
                     <Image
-                      src={`http://localhost:8001${post.img}`}
+                      src={post.img.replace('/img/', '/api/images/')}
                       alt="post img"
                       fill
-                      unoptimized
                       className="object-cover transition-transform duration-300 group-hover:scale-105 group-hover:brightness-90"
                     />
                   ) : (
@@ -177,7 +171,7 @@ export default function UserProfilePage() {
                         </div>
                         <span className="font-medium text-sm">{u.nick}</span>
                       </Link>
-                      {user.id === u.id ? (
+                      {user?.id === u.id ? (
                         <></>
                       ) : (
                         <FollowButton
