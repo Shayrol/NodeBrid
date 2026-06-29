@@ -19,7 +19,16 @@ const usersRouter = require("./routes/users");
 const { sequelize } = require("./models");
 const passportConfig = require("./passport");
 
+// socket 연결하기 ---
+const http = require("http");
+const socket = require("./socket");
+
 const app = express();
+const server = http.createServer(app);
+
+socket(server);
+// socket ----------
+
 // passport 설정
 passportConfig();
 
@@ -96,6 +105,10 @@ app.use((err, req, res, next) => {
   // res.render("error");
 });
 
-app.listen(app.get("port"), () => {
-  console.log(app.get("port"), "번 포트에서 대기 중");
+// app.listen(app.get("port"), () => {
+//   console.log(app.get("port"), "번 포트에서 대기 중");
+// });
+
+server.listen(app.get("port"), () => {
+  console.log("Server Start");
 });
