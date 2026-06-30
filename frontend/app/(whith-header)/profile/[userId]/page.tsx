@@ -10,11 +10,12 @@ import { useQuery } from '@tanstack/react-query';
 import { ImageOff, User, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 export default function UserProfilePage() {
   const { user } = useAuth();
+  const router = useRouter();
 
   const params = useParams();
   const searchParams = useSearchParams();
@@ -62,6 +63,22 @@ export default function UserProfilePage() {
     ? '팔로워가 없습니다.'
     : '팔로잉한 사용자가 없습니다.';
 
+  const handleStartChat = async () => {
+    if (!user) return alert('로그인 후 이용하세요.');
+
+    const res = await fetch('http://localhost:8001/chat/find-or-create', {
+      method: 'POST',
+      body: JSON.stringify({ targetUserId: userId }),
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const { roomId } = await res.json();
+    if (roomId) return router.push(`/chat/${roomId}`);
+  };
+
   return (
     <main className="flex flex-row gap-5 w-full max-w-7xl">
       <div className="max-w-4xl mx-auto p-4">
@@ -86,6 +103,8 @@ export default function UserProfilePage() {
               ) : (
                 <></>
               )}
+
+              <button onClick={handleStartChat}>chat</button>
             </div>
 
             {/* 2. 통계 지표 영역 */}

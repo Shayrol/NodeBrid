@@ -27,7 +27,9 @@ export const getPosts = async (searchParams: SearchParams, cookie?: string) => {
   });
 
   if (!res.ok) {
-    throw new Error('게시글 목록 조회 실패');
+    console.log('게시글 목록 조회 실패');
+    // throw new Error('게시글 목록 조회 실패');
+    return [];
   }
 
   return res.json();

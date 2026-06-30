@@ -126,118 +126,122 @@ export default function PostsList({
     <div className="flex flex-col justify-start items-center gap-3 w-full pb-5 px-4">
       <SearchForm />
 
-      {posts.posts?.map((el) => {
-        // 현재 게시글 ID가 내가 좋아요 누른 배열에 포함되어 있는지 확인
-        const isLiked = likedPostIds.includes(el.id);
-        const currentLikeCount = optimisticLikeCounts[el.id] ?? el.likeCount;
+      {posts?.posts ? (
+        posts.posts?.map((el) => {
+          // 현재 게시글 ID가 내가 좋아요 누른 배열에 포함되어 있는지 확인
+          const isLiked = likedPostIds.includes(el.id);
+          const currentLikeCount = optimisticLikeCounts[el.id] ?? el.likeCount;
 
-        return (
-          <div
-            key={el.id}
-            className="flex flex-col justify-center items-center p-3 gap-3 w-full max-w-2xl bg-card border border-border rounded-lg"
-          >
-            {/* 작성자 정보 */}
-            <Link
-              href={`/profile/${el.User.id}`}
-              aria-label={`${el.User.nick ?? 'null'} 프로필`}
-              className="flex justify-between items-center w-full"
+          return (
+            <div
+              key={el.id}
+              className="flex flex-col justify-center items-center p-3 gap-3 w-full max-w-2xl bg-card border border-border rounded-lg"
             >
-              <div className="flex gap-2 justify-center items-center">
-                <User className="rounded-full border border-border bg-card-secondary text-muted-foreground" />
-
-                <div className="flex flex-col">
-                  <div className="flex justify-start items-center gap-1">
-                    <p className="text-xs font-semibold">{el.User.nick}</p>
-
-                    {user?.id === el.User.id && (
-                      <p className="text-xs font-semibold text-muted-foreground">
-                        (작성자)
-                      </p>
-                    )}
-                  </div>
-
-                  <p className="text-[9px] text-muted-foreground">
-                    @{el.User.email.slice(0, 4)}∗∗∗
-                  </p>
-                </div>
-              </div>
-
-              <p
-                className="text-xs text-muted-foreground"
-                suppressHydrationWarning
+              {/* 작성자 정보 */}
+              <Link
+                href={`/profile/${el.User.id}`}
+                aria-label={`${el.User.nick ?? 'null'} 프로필`}
+                className="flex justify-between items-center w-full"
               >
-                {formatTimeAgo(el.createdAt)}
-              </p>
-            </Link>
+                <div className="flex gap-2 justify-center items-center">
+                  <User className="rounded-full border border-border bg-card-secondary text-muted-foreground" />
 
-            {/* 게시글 영역 */}
-            <Link
-              href={`/post/${el.id}`}
-              aria-label={`${el?.title} 게시글`}
-              className="flex flex-col justify-center items-center w-full gap-3"
-            >
-              <div className="flex flex-col w-full gap-2">
-                <h2 className="text-sm font-bold">{el.title}</h2>
+                  <div className="flex flex-col">
+                    <div className="flex justify-start items-center gap-1">
+                      <p className="text-xs font-semibold">{el.User.nick}</p>
 
-                {el.img && (
-                  <div className="relative w-full h-52">
-                    {' '}
-                    {/* 부모 div에 높이/너비 지정 */}
-                    <Image
-                      src={el.img.replace('/img/', '/api/images/')}
-                      alt="preview"
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw" // 상황에 맞게 조절
-                      className="object-contain"
-                      priority
-                    />
+                      {user?.id === el.User.id && (
+                        <p className="text-xs font-semibold text-muted-foreground">
+                          (작성자)
+                        </p>
+                      )}
+                    </div>
+
+                    <p className="text-[9px] text-muted-foreground">
+                      @{el.User.email.slice(0, 4)}∗∗∗
+                    </p>
+                  </div>
+                </div>
+
+                <p
+                  className="text-xs text-muted-foreground"
+                  suppressHydrationWarning
+                >
+                  {formatTimeAgo(el.createdAt)}
+                </p>
+              </Link>
+
+              {/* 게시글 영역 */}
+              <Link
+                href={`/post/${el.id}`}
+                aria-label={`${el?.title} 게시글`}
+                className="flex flex-col justify-center items-center w-full gap-3"
+              >
+                <div className="flex flex-col w-full gap-2">
+                  <h2 className="text-sm font-bold">{el.title}</h2>
+
+                  {el.img && (
+                    <div className="relative w-full h-52">
+                      {' '}
+                      {/* 부모 div에 높이/너비 지정 */}
+                      <Image
+                        src={el.img.replace('/img/', '/api/images/')}
+                        alt="preview"
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw" // 상황에 맞게 조절
+                        className="object-contain"
+                        priority
+                      />
+                    </div>
+                  )}
+
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(el.content),
+                    }}
+                    className="text-xs font-medium text-foreground"
+                  />
+                </div>
+
+                {el.Hashtags.length > 0 && (
+                  <div className="flex items-center gap-2 w-full">
+                    {el.Hashtags.map((tag) => (
+                      <div
+                        key={tag.id}
+                        className="flex items-center justify-center py-1 px-2 rounded-lg border-border bg-card-secondary"
+                      >
+                        <p className="text-xs text-muted-foreground">
+                          {tag.title}
+                        </p>
+                      </div>
+                    ))}
                   </div>
                 )}
+              </Link>
 
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(el.content),
-                  }}
-                  className="text-xs font-medium text-foreground"
-                />
-              </div>
+              {/* 하단 옵션 */}
 
-              {el.Hashtags.length > 0 && (
-                <div className="flex items-center gap-2 w-full">
-                  {el.Hashtags.map((tag) => (
-                    <div
-                      key={tag.id}
-                      className="flex items-center justify-center py-1 px-2 rounded-lg border-border bg-card-secondary"
-                    >
-                      <p className="text-xs text-muted-foreground">
-                        {tag.title}
-                      </p>
-                    </div>
-                  ))}
+              <div className="flex justify-between w-full">
+                {/* 좋아요 */}
+                <div className="flex gap-1">
+                  <button
+                    className="transition-transform duration-150 active:scale-90 cursor-pointer"
+                    aria-label="좋아요 버튼"
+                    onClick={() => onLikePost(el)}
+                  >
+                    <Heart
+                      className={`${isLiked ? 'fill-red-400 text-red-500' : 'text-muted-foreground'} size-4`}
+                    />
+                  </button>
+                  <p className="text-foreground text-sm">{currentLikeCount}</p>
                 </div>
-              )}
-            </Link>
-
-            {/* 하단 옵션 */}
-
-            <div className="flex justify-between w-full">
-              {/* 좋아요 */}
-              <div className="flex gap-1">
-                <button
-                  className="transition-transform duration-150 active:scale-90 cursor-pointer"
-                  aria-label="좋아요 버튼"
-                  onClick={() => onLikePost(el)}
-                >
-                  <Heart
-                    className={`${isLiked ? 'fill-red-400 text-red-500' : 'text-muted-foreground'} size-4`}
-                  />
-                </button>
-                <p className="text-foreground text-sm">{currentLikeCount}</p>
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })
+      ) : (
+        <p>새로운 게시글이 없습니다.</p>
+      )}
     </div>
   );
 }

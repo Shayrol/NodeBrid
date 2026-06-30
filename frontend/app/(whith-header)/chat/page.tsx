@@ -5,7 +5,7 @@ import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:8001');
 
-export default function ChatPage() {
+export default function ChatPageTest() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<string[]>([]);
 
@@ -22,7 +22,10 @@ export default function ChatPage() {
   const sendMessage = () => {
     if (!message.trim()) return;
 
-    socket.emit('chat', message);
+    socket.emit('chat', {
+      nick: 'chan',
+      message: message,
+    });
     setMessage('');
   };
 
