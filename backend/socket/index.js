@@ -1,4 +1,5 @@
 const { Server } = require("socket.io");
+const { Message } = require("../models");
 
 module.exports = (server) => {
   const io = new Server(server, {
@@ -9,12 +10,26 @@ module.exports = (server) => {
   });
 
   io.on("connection", (socket) => {
-    console.log("접속: ", socket.id);
+    console.log("연결됨");
 
-    socket.on("chat", (message) => {
-      console.log("채팅: ", message);
+    socket.on("joinRoom", (roomId) => {
+      socket.join(roomId);
+    });
 
-      io.emit("chat", message);
+    socket.on("sendMessage", async (data) => {
+      try {
+        const { roomId, content, userId } = data;
+
+        const savedMsg = await Message.create({
+          roomId,
+          userId,
+          content,
+        });
+
+        io.to(roomId).emit("newMessage", savedMsg);
+      } catch (err) {
+        console.error(err);
+      }
     });
 
     socket.on("disconnect", () => {
@@ -24,7 +39,6 @@ module.exports = (server) => {
 
   return io;
 };
-
 // socket.op(...) 은 클라이언트 -> 서버
 // io.emit(...) 은 서버 -> 모든 클라이언트
 

@@ -60,6 +60,11 @@ module.exports = class User extends Sequelize.Model {
       foreignKey: "userId",
       otherKey: "postId",
     });
+    db.User.hasMany(db.ChatParticipant, {
+      foreignKey: "userId",
+      sourceKey: "id",
+    });
+    db.User.hasMany(db.Message, { foreignKey: "userId", sourceKey: "id" });
   }
 };
 
